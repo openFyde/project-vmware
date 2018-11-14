@@ -1,0 +1,43 @@
+diff --git a/src/gallium/auxiliary/util/u_debug.h b/src/gallium/auxiliary/util/u_debug.h
+old mode 100644
+new mode 100755
+index d2ea89f..dacbfc7
+--- a/src/gallium/auxiliary/util/u_debug.h
++++ b/src/gallium/auxiliary/util/u_debug.h
+@@ -49,6 +49,14 @@
+ #include "pipe/p_format.h"
+ #include "pipe/p_defines.h"
+ 
++#ifdef HAVE_ANDROID_PLATFORM
++#define LOG_TAG "DRI2"
++#if ANDROID_API_LEVEL >= 26
++#include <log/log.h>
++#else
++#include <cutils/log.h>
++#endif
++#endif
+ 
+ #ifdef	__cplusplus
+ extern "C" {
+@@ -62,7 +70,6 @@ extern "C" {
+ #endif
+ 
+ void _debug_vprintf(const char *format, va_list ap);
+-   
+ 
+ static inline void
+ _debug_printf(const char *format, ...)
+@@ -91,9 +98,12 @@ static inline void
+ debug_printf(const char *format, ...)
+ {
+ #ifdef DEBUG
++   char buffer[80];
+    va_list ap;
+    va_start(ap, format);
+-   _debug_vprintf(format, ap);
++   vsprintf(buffer, format, ap);
++   LOG_PRI(ANDROID_LOG_ERROR , LOG_TAG, buffer);
++//   _debug_vprintf(format, ap);
+    va_end(ap);
+ #else
+    (void) format; /* silence warning */
