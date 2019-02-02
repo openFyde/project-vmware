@@ -6,3 +6,4 @@ media-libs/arc-mesa abi_x86_32 llvm egl gles1 gles2 shared-glapi
 x11-libs/arc-libdrm abi_x86_32 -libkms
 dev-libs/arc-libelf abi_x86_32
 sys-kernel/chromeos-kernel-next apply_patches
+#sys-kernel/chromeos-kernel-4_19 apply_patches
