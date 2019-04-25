@@ -167,6 +167,7 @@ src_install() {
 	fi
     insinto /etc/init
     doins ${FILESDIR}/open-vm-tools.conf
+    doins ${FILESDIR}/mount-vmware-share.conf
 }
 
 pkg_postinst() {
