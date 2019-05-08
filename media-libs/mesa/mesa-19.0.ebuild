@@ -6,6 +6,9 @@ EAPI=6
 
 MESON_AUTO_DEPEND=no
 
+CROS_WORKON_COMMIT="b43b55d4619489e603780adf3c92a36dadcc362b"
+CROS_WORKON_TREE="b09304eab38348e2a157c4adc75542a460746ce9"
+
 EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
 CROS_WORKON_BLACKLIST="1"
@@ -36,7 +39,7 @@ fi
 # GLES[2]/gl[2]{,ext,platform}.h are SGI-B-2.0
 LICENSE="MIT LGPL-3 SGI-B-2.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="amdgpu radeon"
@@ -106,13 +109,15 @@ src_prepare() {
 	epatch "${FILESDIR}"/18.3-intel-limit-urb-size-for-SKL-KBL-CFL-GT1.patch
 	# Don't apply intel BGRA internal format patch for VM build since BGRA_EXT is not a valid
 	# internal format for GL context.
-	if use !video_cards_virgl ; then
+	if use !video_cards_virgl; then
 		epatch "${FILESDIR}"/DOWNSTREAM-i965-Use-GL_BGRA_EXT-internal-format-for-B8G8R8A8-B8.patch
 	fi
+    
+    if use video_cards_vmware; then
+        epatch ${FILESDIR}/svga_format.patch
+    fi
 	epatch "${FILESDIR}"/intel-Add-support-for-Comet-Lake.patch
 
-	# Produce a dummy git_sha1.h file because .git will not be copied to portage tmp directory
-	echo '#define MESA_GIT_SHA1 "git-0000000"' > src/git_sha1.h
 	default
 }
 
@@ -154,6 +159,7 @@ src_configure() {
 		gallium_enable video_cards_freedreno freedreno
 
 		gallium_enable video_cards_virgl virgl
+        gallium_enable video_cards_vmware svga
 	fi
 
 	if use vulkan; then
@@ -185,14 +191,21 @@ src_configure() {
 		fi
 	fi
 
+	if use X; then
+		glx="dri"
+	else
+		glx="disabled"
+	fi
+
 	append-flags "-UENABLE_SHADER_CACHE"
 
 	emesonargs+=(
-		-Dglx=disabled
+		-Dglx="${glx}"
 		-Dllvm="${LLVM_ENABLE}"
 		-Dplatforms="${egl_platforms}"
 		$(meson_use egl)
 		$(meson_use gbm)
+		$(meson_use X gl)
 		$(meson_use gles1)
 		$(meson_use gles2)
 		$(meson_use selinux)
@@ -215,7 +228,7 @@ src_install() {
 	insinto "/usr/$(get_libdir)/dri/"
 	insopts -m0755
 	# install the gallium drivers we use
-	local gallium_drivers_files=( nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so )
+	local gallium_drivers_files=( nouveau_dri.so r300_dri.so r600_dri.so msm_dri.so swrast_dri.so vmwgfx_dri.so )
 	for x in ${gallium_drivers_files[@]}; do
 		if [ -f "${S}/$(get_libdir)/gallium/${x}" ]; then
 			doins "${S}/$(get_libdir)/gallium/${x}"

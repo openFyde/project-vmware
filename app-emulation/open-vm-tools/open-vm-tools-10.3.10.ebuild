@@ -1,29 +1,22 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 2007-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-EGIT_REPO_URI="https://github.com/vmware/open-vm-tools"
-EGIT_BRANCH="master"
-
-inherit git-2 autotools flag-o-matic linux-info pam systemd toolchain-funcs user
+inherit autotools linux-info pam systemd toolchain-funcs user
 
 DESCRIPTION="Opensourced tools for VMware guests"
 HOMEPAGE="https://github.com/vmware/open-vm-tools"
-MY_P="${P}"
-#SRC_URI="https://github.com/vmware/open-vm-tools/releases/download/stable-${PV}/${MY_P}.tar.gz"
+MY_P="${P}-12406962"
+SRC_URI="https://github.com/vmware/open-vm-tools/releases/download/stable-${PV}/${MY_P}.tar.gz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="amd64 ~x86"
-IUSE="X caf +deploypkg +tirpc +dnet doc +fuse +grabbitmqproxy gtkmm +icu multimon pam +resolutionkms +ssl static-libs test +vgauth +xml-security-c xmlsec"
+IUSE="X +deploypkg +dnet doc +fuse +grabbitmqproxy gtkmm +icu multimon pam +resolutionkms +ssl static-libs +vgauth"
 REQUIRED_USE="
 	multimon? ( X )
-	vgauth? (
-		^^ ( xmlsec xml-security-c )
-		ssl
-	)
-	caf? ( vgauth ssl )
+	vgauth? ( ssl )
 	grabbitmqproxy? ( ssl )
 "
 
@@ -35,8 +28,8 @@ RDEPEND="
 	pam? ( virtual/pam )
 	ssl? ( dev-libs/openssl:0 )
 	vgauth? (
-		xml-security-c? ( dev-libs/xerces-c dev-libs/xml-security-c )
-		xmlsec? ( dev-libs/libxml2 dev-libs/xmlsec )
+		dev-libs/libxml2
+		dev-libs/xmlsec
 	)
 	X? (
 		x11-libs/libXext
@@ -56,10 +49,6 @@ RDEPEND="
 	)
 	dnet? ( dev-libs/libdnet )
 	icu? ( dev-libs/icu:= )
-	caf? (
-		dev-libs/log4cpp
-		net-libs/rabbitmq-c
-	)
 	resolutionkms? (
 		x11-libs/libdrm[video_cards_vmware]
 		virtual/libudev
@@ -67,10 +56,12 @@ RDEPEND="
 "
 
 DEPEND="${RDEPEND}
-	virtual/pkgconfig
 	net-libs/rpcsvc-proto
+"
+
+BDEPEND="
+	virtual/pkgconfig
 	doc? ( app-doc/doxygen )
-	test? ( dev-util/cunit )
 "
 
 S="${WORKDIR}/${MY_P}"
@@ -78,7 +69,6 @@ S="${WORKDIR}/${MY_P}"
 PATCHES=(
 	"${FILESDIR}/10.1.0-mount.vmhgfs.patch"
 	"${FILESDIR}/10.1.0-Werror.patch"
-	"${FILESDIR}/10.2.5-libtirpc.patch"
 )
 
 pkg_setup() {
@@ -90,21 +80,12 @@ pkg_setup() {
 }
 
 src_prepare() {
-#	eapply -p2 "${PATCHES[@]}"
-#	eapply_user
-    cd open-vm-tools
-    S=`pwd`
-    epatch ${FILESDIR}/10.1.0-mount.vmhgfs.patch
-    epatch ${FILESDIR}/10.1.0-Werror.patch
-#    epatch ${FILESDIR}/10.2.5-libtirpc.patch
+	eapply -p2 "${PATCHES[@]}"
+	eapply_user
 	eautoreconf
 }
 
 src_configure() {
-	# On >=sys-libs/glibc-2.26, SunRPC no longer provided
-	# Use libtirpc and rpcsvc-proto instead
-	append-cppflags "$($(tc-getPKG_CONFIG) --cflags libtirpc)"
-	export LIBVMTOOLS_LIBADD="$($(tc-getPKG_CONFIG) --libs libtirpc)"
 	local myeconfargs=(
 		--without-root-privileges
 		$(use_enable multimon)
@@ -112,19 +93,16 @@ src_configure() {
 		$(use_with X gtk3)
 		$(use_with gtkmm gtkmm3)
 		$(use_enable doc docs)
-		$(use_enable test tests)
+		--disable-tests
 		$(use_enable resolutionkms)
 		$(use_enable static-libs static)
 		$(use_enable deploypkg)
 		$(use_enable grabbitmqproxy)
 		$(use_with pam)
 		$(use_enable vgauth)
-		$(use vgauth && use_enable xmlsec xmlsec1)
-		$(use vgauth && use_enable xml-security-c xmlsecurity)
-		$(use_enable caf)
+		--disable-caf
 		$(use_with dnet)
 		$(use_with icu)
-        $(use_with tirpc)
 	)
 	# Avoid a bug in configure.ac
 	use ssl || myeconfargs+=( --without-ssl )
@@ -134,15 +112,16 @@ src_configure() {
 
 src_install() {
 	default
-	find "${D}" -name '*.la' -delete || die
+	find "${ED}" -name '*.la' -delete || die
 
 	if use pam; then
-		rm "${ED%/}"/etc/pam.d/vmtoolsd || die
+		rm "${ED}"/etc/pam.d/vmtoolsd || die
 		pamd_mimic_system vmtoolsd auth account
 	fi
 
 	newinitd "${FILESDIR}/open-vm-tools.initd" vmware-tools
 	newconfd "${FILESDIR}/open-vm-tools.confd" vmware-tools
+
     insinto /etc/init
 	if use vgauth; then
 		systemd_newunit "${FILESDIR}"/vmtoolsd.vgauth.service vmtoolsd.service
@@ -155,7 +134,7 @@ src_install() {
 	fi
     doins ${FILESDIR}/mount-vmware-share.conf
 	# Replace mount.vmhgfs with a wrapper
-	mv "${ED%/}"/usr/sbin/{mount.vmhgfs,hgfsmounter} || die
+	mv "${ED}"/usr/sbin/{mount.vmhgfs,hgfsmounter} || die
 	dosbin "${FILESDIR}/mount.vmhgfs"
 
 	# Make fstype = vmhgfs-fuse work in fstab
