@@ -1,0 +1,82 @@
+From a0bd42368ead1cbd18a417d9c7c37d62f63fde25 Mon Sep 17 00:00:00 2001
+From: Zach Reizner <zachr@google.com>
+Date: Mon, 6 Apr 2015 11:25:12 -0700
+Subject: [PATCH libdrm 2/7] CHROMIUM: vgem: add DRM_IOCTL_VGEM_MODE_MAP_DUMB
+ support
+
+This is the libdrm counterpart of the kernel patch in CL:263991:
+DRM_IOCTL_MODE_MAP_DUMB is not allowable for use by render nodes, so we
+add DRM_IOCTL_VGEM_MODE_MAP_DUMB, which behaves exactly the same as
+DRM_IOCTL_MODE_MAP_DUMB, and is allowed on render nodes.
+
+Old-TEST=the file /usr/include/libdrm/vgem_drm.h under the board's build
+Old-BUG=chromium:469666
+Old-BUG=b:26575005
+
+Signed-off-by: Zach Reizner <zachr@google.com>
+(rebased from chromeos-2.4.89)
+
+BUG=b:112720782
+Signed-off-by: Kristian H. Kristensen <hoegsberg@chromium.org>
+
+Change-Id: I611649191350df1a44c8f2f782ca443681cd9a05
+---
+ Makefile.sources       |  1 +
+ include/drm/vgem_drm.h | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
+ create mode 100644 include/drm/vgem_drm.h
+
+diff --git a/Makefile.sources b/Makefile.sources
+index 55290fe9..499fbd81 100644
+--- a/Makefile.sources
++++ b/Makefile.sources
+@@ -35,6 +35,7 @@ LIBDRM_INCLUDE_H_FILES := \
+ 	include/drm/sis_drm.h \
+ 	include/drm/tegra_drm.h \
+ 	include/drm/vc4_drm.h \
++	include/drm/vgem_drm.h \
+ 	include/drm/via_drm.h \
+ 	include/drm/virtgpu_drm.h
+ 
+diff --git a/include/drm/vgem_drm.h b/include/drm/vgem_drm.h
+new file mode 100644
+index 00000000..9be928f4
+--- /dev/null
++++ b/include/drm/vgem_drm.h
+@@ -0,0 +1,33 @@
++/*
++ * Copyright 2015 The Chromium OS Authors. All rights reserved.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining a
++ * copy of this software and associated documentation files (the "Software"),
++ * to deal in the Software without restriction, including without limitation
++ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
++ * and/or sell copies of the Software, and to permit persons to whom the
++ * Software is furnished to do so, subject to the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be included in
++ * all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
++ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
++ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
++ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
++ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ * OTHER DEALINGS IN THE SOFTWARE.
++ */
++
++#ifndef _VGEM_DRM_H_
++#define _VGEM_DRM_H_
++
++#include "drm.h"
++
++#define DRM_VGEM_MODE_MAP_DUMB 0x00
++
++#define DRM_IOCTL_VGEM_MODE_MAP_DUMB \
++	DRM_IOWR(DRM_COMMAND_BASE + DRM_VGEM_MODE_MAP_DUMB, struct drm_mode_map_dumb)
++
++#endif
+-- 
+2.16.4
+

@@ -107,41 +107,45 @@ src_prepare() {
 			configure.ac || die
 	fi
 
-	epatch "${FILESDIR}"/8.1-array-overflow.patch
-	epatch "${FILESDIR}"/17.0-glcpp-Hack-to-handle-expressions-in-line-di.patch
-	epatch "${FILESDIR}"/18.1-radeonsi-fix-occlusion-queries.patch
-	epatch "${FILESDIR}"/18.1-glsl-cache-save-restore-ExternalSamplersUsed.patch
-	epatch "${FILESDIR}"/18.1-virgl-Fix-flush-in-virgl_encoder_inline_write.patch
-	epatch "${FILESDIR}"/18.1-util-disk_cache-Fix-disk_cache_get_function_timestamp-with-disabled-cache.patch
-	epatch "${FILESDIR}"/18.1-radv-Still-enable-inmemory-API-level-caching-if-disk.patch
-	epatch "${FILESDIR}"/18.2-mesa-GL_MESA_framebuffer_flip_y-extension-v4.patch
-	epatch "${FILESDIR}"/18.2-i965-implement-GL_MESA_framebuffer_flip_y-v3.patch
-	epatch "${FILESDIR}"/18.1-egl-surfaceless-swrastloader.patch
-	epatch "${FILESDIR}"/18.1-egl-surfaceless-drmless.patch
-	epatch "${FILESDIR}"/18.2-radv-Make-fs-key-exemplars-ordered-to-be-a-reverse-f.patch
-	epatch "${FILESDIR}"/18.2-radv-Refactor-blit-pipeline-creation.patch
-	epatch "${FILESDIR}"/18.2-radv-Add-on-demand-compilation-of-built-in-shaders.patch
-	epatch "${FILESDIR}"/18.3-glapi-actually-implement-GL_EXT_robustness.patch
-	epatch "${FILESDIR}"/18.3-i965-Replace-checks-for-rb-Name-with-FlipY.patch
-	epatch "${FILESDIR}"/18.2-egl-rewire-the-build-systems-to-use-libwayland-egl.patch
-	epatch "${FILESDIR}"/18.2-egl-remove-wayland-egl-now-that-we-re-using-libwayla.patch
-	epatch "${FILESDIR}"/18.2-mesa-Additional-FlipY-applications.patch
-	epatch "${FILESDIR}"/18.2-ac-move-all-LLVM-module-initialization-into.patch
-	epatch "${FILESDIR}"/18.2-ac-radeonsi-refactor-out-pass-manager-init-to-common.patch
-	epatch "${FILESDIR}"/18.2-ac-add-target-library-info-helpers.patch
-	epatch "${FILESDIR}"/18.2-radeonsi-rename-si_compiler-ac_llvm_compiler.patch
-	epatch "${FILESDIR}"/18.2-ac-radeonsi-port-compiler-init-destroy-out-of-radeon.patch
-	epatch "${FILESDIR}"/18.2-ac-add-reusable-helpers-for-direct-LLVM-compilation.patch
-	epatch "${FILESDIR}"/18.2-radeonsi-use-ac_compile_module_to_binary-to-reduce-c.patch
-	epatch "${FILESDIR}"/18.2-ac-radeonsi-reduce-optimizations-for-complex-compute.patch
-	epatch "${FILESDIR}"/18.2-st-mesa-Also-check-for-PIPE_FORMAT_A8R8G8B8_SRGB-for.patch
-	epatch "${FILESDIR}"/18.3-intel-limit-urb-size-for-SKL-KBL-CFL-GT1.patch
-	epatch "${FILESDIR}"/18.2-gallium-winsys-kms-dont-unmap-what-wasnt-mapped.patch
-	epatch "${FILESDIR}"/18.2-st-mesa-only-define-GLSL-1.4-for-compat-if-driver-su.patch
-	epatch "${FILESDIR}"/18.2-gallium-add-PIPE_CAP_GLSL_FEATURE_LEVEL_COMPATIBILIT.patch
-	epatch "${FILESDIR}"/18.2-st-mesa-use-PIPE_CAP_GLSL_FEATURE_LEVEL_COMPATIBILIT.patch
-	epatch "${FILESDIR}"/18.2-mesa-add-ff-fragment-shader-support-for-geom-and-tes.patch
-	epatch "${FILESDIR}"/18.2-radeonsi-enable-OpenGL-3.3-compat-profile.patch
+	epatch "${FILESDIR}"/${P}-patches/8.1-array-overflow.patch
+	epatch "${FILESDIR}"/${P}-patches/17.0-glcpp-Hack-to-handle-expressions-in-line-di.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-radeonsi-fix-occlusion-queries.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-glsl-cache-save-restore-ExternalSamplersUsed.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-virgl-Fix-flush-in-virgl_encoder_inline_write.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-util-disk_cache-Fix-disk_cache_get_function_timestamp-with-disabled-cache.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-radv-Still-enable-inmemory-API-level-caching-if-disk.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-mesa-GL_MESA_framebuffer_flip_y-extension-v4.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-i965-implement-GL_MESA_framebuffer_flip_y-v3.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-egl-surfaceless-swrastloader.patch
+	epatch "${FILESDIR}"/${P}-patches/18.1-egl-surfaceless-drmless.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radv-Make-fs-key-exemplars-ordered-to-be-a-reverse-f.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radv-Refactor-blit-pipeline-creation.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radv-Add-on-demand-compilation-of-built-in-shaders.patch
+	epatch "${FILESDIR}"/${P}-patches/18.3-glapi-actually-implement-GL_EXT_robustness.patch
+	epatch "${FILESDIR}"/${P}-patches/18.3-i965-Replace-checks-for-rb-Name-with-FlipY.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-egl-rewire-the-build-systems-to-use-libwayland-egl.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-egl-remove-wayland-egl-now-that-we-re-using-libwayla.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-mesa-Additional-FlipY-applications.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-move-all-LLVM-module-initialization-into.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-radeonsi-refactor-out-pass-manager-init-to-common.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-add-target-library-info-helpers.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radeonsi-rename-si_compiler-ac_llvm_compiler.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-radeonsi-port-compiler-init-destroy-out-of-radeon.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-add-reusable-helpers-for-direct-LLVM-compilation.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radeonsi-use-ac_compile_module_to_binary-to-reduce-c.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-ac-radeonsi-reduce-optimizations-for-complex-compute.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-st-mesa-Also-check-for-PIPE_FORMAT_A8R8G8B8_SRGB-for.patch
+	epatch "${FILESDIR}"/${P}-patches/18.3-intel-limit-urb-size-for-SKL-KBL-CFL-GT1.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-gallium-winsys-kms-dont-unmap-what-wasnt-mapped.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-st-mesa-only-define-GLSL-1.4-for-compat-if-driver-su.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-gallium-add-PIPE_CAP_GLSL_FEATURE_LEVEL_COMPATIBILIT.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-st-mesa-use-PIPE_CAP_GLSL_FEATURE_LEVEL_COMPATIBILIT.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-mesa-add-ff-fragment-shader-support-for-geom-and-tes.patch
+	epatch "${FILESDIR}"/${P}-patches/18.2-radeonsi-enable-OpenGL-3.3-compat-profile.patch
+
+  if use video_cards_vmware; then
+        epatch ${FILESDIR}/svga_format.patch
+  fi
 
 	base_src_prepare
 

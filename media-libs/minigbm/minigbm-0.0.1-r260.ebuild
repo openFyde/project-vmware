@@ -39,7 +39,7 @@ DEPEND="${RDEPEND}
 	)"
 
 src_prepare() {
-    epatch ${FILESDIR}/vmwgfx_and_arc.patch
+  epatch ${FILESDIR}/vmware_minigbm.patch
 	default
 	sanitizers-setup-env
 	cros-common.mk_src_prepare

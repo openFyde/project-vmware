@@ -1,0 +1,52 @@
+diff --git a/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h b/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
+index f2bfd3d80598..9b4db82fd81c 100644
+--- a/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
++++ b/drivers/gpu/drm/vmwgfx/device_include/svga3d_surfacedefs.h
+@@ -1333,6 +1333,7 @@ svga3dsurface_is_gb_screen_target_format(SVGA3dSurfaceFormat format)
+ 		format == SVGA3D_R5G6B5   ||
+ 		format == SVGA3D_X1R5G5B5 ||
+ 		format == SVGA3D_A1R5G5B5 ||
++        format == SVGA3D_R8G8B8A8_UNORM ||
+ 		format == SVGA3D_P8);
+ }
+ 
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+index 61a84b958d67..8088df4653cf 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_drv.c
+@@ -521,6 +521,8 @@ static void vmw_get_initial_size(struct vmw_private *dev_priv)
+ {
+ 	uint32_t width;
+ 	uint32_t height;
++    vmw_write(dev_priv, SVGA_REG_WIDTH, 1920);
++    vmw_write(dev_priv, SVGA_REG_HEIGHT, 1080);
+ 
+ 	width = vmw_read(dev_priv, SVGA_REG_WIDTH);
+ 	height = vmw_read(dev_priv, SVGA_REG_HEIGHT);
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+index dca04d4246ea..6a6686c46b1b 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -993,6 +993,9 @@ static int vmw_kms_new_framebuffer_surface(struct vmw_private *dev_priv,
+ 	case DRM_FORMAT_XRGB1555:
+ 		format = SVGA3D_A1R5G5B5;
+ 		break;
++    case DRM_FORMAT_ABGR8888:
++        format = SVGA3D_R8G8B8A8_UNORM;
++        break;
+ 	default:
+ 		DRM_ERROR("Invalid pixel format: %s\n",
+ 			  drm_get_format_name(mode_cmd->pixel_format, &format_name));
+diff --git a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+index ef09f7edf931..de804da7b4ff 100644
+--- a/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
++++ b/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
+@@ -830,7 +830,7 @@ int vmw_surface_define_ioctl(struct drm_device *dev, void *data,
+ 	    srf->num_sizes == 1 &&
+ 	    srf->sizes[0].width == 64 &&
+ 	    srf->sizes[0].height == 64 &&
+-	    srf->format == SVGA3D_A8R8G8B8) {
++	    (srf->format == SVGA3D_A8R8G8B8 || srf->format == SVGA3D_R8G8B8A8_UNORM)) {
+ 
+ 		srf->snooper.image = kzalloc(64 * 64 * 4, GFP_KERNEL);
+ 		if (!srf->snooper.image) {
