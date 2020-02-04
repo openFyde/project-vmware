@@ -3,8 +3,8 @@
 
 EAPI="6"
 
-CROS_WORKON_COMMIT="5ff0cfd262c4660afbb8edc90719f4a3c2e32b0c"
-CROS_WORKON_TREE="11c801a9a68ddad535c0e6f6dfe233d800adb5d6"
+CROS_WORKON_COMMIT="c7aa974dd383680ce8b1384785416bc77fa2c145"
+CROS_WORKON_TREE="42c89ec20b633be79b68f966d87e9468d077c853"
 CROS_WORKON_PROJECT="chromiumos/platform/minigbm"
 CROS_WORKON_LOCALNAME="../platform/minigbm"
 CROS_WORKON_OUTOFTREE_BUILD=1
@@ -34,7 +34,7 @@ RDEPEND="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	video_cards_amdgpu? (
-		media-libs/mesa
+		media-libs/mesa-amd
 		x11-drivers/opengles-headers
 	)"
 
@@ -51,6 +51,9 @@ src_configure() {
 	use video_cards_exynos && append-cppflags -DDRV_EXYNOS && export DRV_EXYNOS=1
 	use video_cards_intel && append-cppflags -DDRV_I915 && export DRV_I915=1
 	use video_cards_marvell && append-cppflags -DDRV_MARVELL && export DRV_MARVELL=1
+	if [[ ${MTK_MINIGBM_PLATFORM} == "MT8183" ]] ; then
+		append-cppflags -DMTK_MT8183 && export MTK_MT8183=1
+	fi
 	use video_cards_mediatek && append-cppflags -DDRV_MEDIATEK && export DRV_MEDIATEK=1
 	use video_cards_msm && append-cppflags -DDRV_MSM && export DRV_MSM=1
 	use video_cards_radeon && append-cppflags -DDRV_RADEON && export DRV_RADEON=1

@@ -1,8 +1,6 @@
 media-libs/mesa::chromiumos
 media-libs/minigbm::chromiumos
 media-libs/arc-mesa::chromiumos
-x11-libs/libdrm::chromiumos
 media-libs/arc-cros-gralloc::chromiumos
-x11-libs/arc-libdrm::chromiumos
 sys-kernel/chromeos-kernel-4_19::chromiumos
->sys-kernel/chromeos-kernel-4_19-4.19.35
+sys-kernel/chromeos-kernel-5_4::chromiumos
