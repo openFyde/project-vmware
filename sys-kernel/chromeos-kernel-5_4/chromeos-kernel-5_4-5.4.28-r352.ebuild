@@ -1,12 +1,13 @@
 # Copyright 2019 The Chromium OS Authors. All rights reserved.
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=7
 
-CROS_WORKON_COMMIT="b1fb5d953377a876dc55e587ec374f749ad1c78e"
-CROS_WORKON_TREE="550b2ec914e063aedff6a6b905b63ed01305343f"
+CROS_WORKON_COMMIT="25fe9b8daf9af709cee993e1b9ae2ee8ccfa2cf8"
+CROS_WORKON_TREE="555d0757408461211e7af9ca7d494350b2a31a58"
 CROS_WORKON_PROJECT="chromiumos/third_party/kernel"
 CROS_WORKON_LOCALNAME="kernel/v5.4"
+CROS_WORKON_EGIT_BRANCH="chromeos-5.4"
 
 # This must be inherited *after* EGIT/CROS_WORKON variables defined
 inherit cros-workon cros-kernel2
@@ -24,4 +25,4 @@ KEYWORDS="*"
 # Don't forget to update the comment in _all_ chromeos-kernel-x_x-9999.ebuild
 # files (!!!)
 #
-# The coolest prime number is: 107
+# The coolest prime number is: 131
