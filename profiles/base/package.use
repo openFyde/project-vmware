@@ -1,5 +1,5 @@
 app-emulation/open-vm-tools -icu resolutionkms fuse vgauth -deploypkg dnet -pam
-sys-devel/arc-build abi_x86_32 android-container-nyc
+sys-devel/arc-build abi_x86_32 
 media-libs/arc-cros-gralloc abi_x86_32
 sys-devel/arc-llvm abi_x86_32
 media-libs/arc-mesa abi_x86_32 llvm egl gles1 gles2 shared-glapi 
@@ -8,3 +8,4 @@ dev-libs/arc-libelf abi_x86_32
 sys-kernel/chromeos-kernel-4_19 -clang
 sys-kernel/chromeos-kernel-5_4 -clang -lld
 <sys-kernel/chromeos-kernel-4_19-9999 apply_patches
+sys-kernel/chromeos-kernel-5_10 apply_patches
