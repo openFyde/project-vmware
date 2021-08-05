@@ -3,8 +3,8 @@
 
 EAPI=7
 
-CROS_WORKON_COMMIT="6f6efdc6fa38ed3bcacfa9e152f415d50ee8bad0"
-CROS_WORKON_TREE="06c3486af100c39ddc9cb59381d087b4f2ed1634"
+CROS_WORKON_COMMIT="b384db34664466386016b03615fe1387aa2d53c7"
+CROS_WORKON_TREE="11192e23da45b41982aecb45ea74f274f6d697a0"
 CROS_WORKON_PROJECT="chromiumos/platform/vboot_reference"
 CROS_WORKON_LOCALNAME="platform/vboot_reference"
 
@@ -14,7 +14,7 @@ DESCRIPTION="Chrome OS verified boot tools"
 
 LICENSE="BSD-Google"
 KEYWORDS="*"
-IUSE="cros_host dev_debug_force fuzzer pd_sync test tpmtests tpm tpm2 tpm2_simulator"
+IUSE="cros_host dev_debug_force fuzzer pd_sync test tpmtests tpm tpm2 tpm2_simulator vtpm_proxy"
 
 REQUIRED_USE="?? ( tpm2 tpm )"
 
@@ -67,6 +67,7 @@ vemake() {
 		PD_SYNC=$(usev pd_sync) \
 		DEV_DEBUG_FORCE=$(usev dev_debug_force) \
 		TPM2_SIMULATOR="$(usev tpm2_simulator)" \
+		VTPM_PROXY="$(usev vtpm_proxy)" \
 		FUZZ_FLAGS="${SANITIZER_CFLAGS}" \
 		"$@"
 }
