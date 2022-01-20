@@ -108,6 +108,6 @@ src_install() {
 }
 
 src_prepare() {
-  default
   eapply ${FILESDIR}/force_set_vm.patch
+  default
 }
