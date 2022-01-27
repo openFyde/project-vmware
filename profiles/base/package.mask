@@ -4,5 +4,5 @@ media-libs/arc-mesa::chromiumos
 media-libs/arc-cros-gralloc::chromiumos
 sys-kernel/chromeos-kernel-4_19::chromiumos
 sys-kernel/chromeos-kernel-5_4::chromiumos
-sys-kernel/chromeos-kernel-5_4::patches
+sys-kernel/chromeos-kernel-5_4::openfyde-patches
 chromeos-base/vboot_reference::chromiumos
