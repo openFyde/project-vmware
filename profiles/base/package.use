@@ -8,4 +8,4 @@ dev-libs/arc-libelf abi_x86_32
 sys-kernel/chromeos-kernel-4_19 -clang
 sys-kernel/chromeos-kernel-5_4 -clang -lld
 <sys-kernel/chromeos-kernel-4_19-9999 apply_patches
-sys-kernel/chromeos-kernel-5_10 apply_patches
+<sys-kernel/chromeos-kernel-5_10-9999 apply_patches
