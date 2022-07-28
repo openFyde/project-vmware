@@ -1,0 +1,31 @@
+From 65258133ebd9bf0bcdf3c889a5ca65ba7a8b8de4 Mon Sep 17 00:00:00 2001
+From: jinqiang zhang <jinqiang@fydeos.io>
+Date: Thu, 28 Jul 2022 09:52:26 +0000
+Subject: [PATCH] OS-78: ignore numlock key for VMware ESXi
+
+Signed-off-by: jinqiang zhang <jinqiang@fydeos.io>
+---
+ ui/base/ime/ash/input_method_ash.cc | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/ui/base/ime/ash/input_method_ash.cc b/ui/base/ime/ash/input_method_ash.cc
+index 05c334e60787a..f47712cd11e20 100644
+--- a/ui/base/ime/ash/input_method_ash.cc
++++ b/ui/base/ime/ash/input_method_ash.cc
+@@ -88,6 +88,13 @@ ui::EventDispatchDetails InputMethodAsh::DispatchKeyEvent(ui::KeyEvent* event) {
+       keyboard->SetCapsLockEnabled(event->IsCapsLockOn());
+     }
+ 
++    // For FydeOS (maybe also chromeOS) on ESXi, always has a numlock keyevent before normal keyevent,
++    // this bug will effect ime.
++    // Because of the numpad is always work whatever press numlock, I think we can ignore it.
++    if (keyboard && event->key_code() == ui::VKEY_NUMLOCK ) {
++      return ProcessUnfilteredKeyPressEvent(event);
++    }
++
+     // For JP106 language input keys, makes sure they can be passed to the app
+     // so that the VDI web apps can be supported. See https://crbug.com/816341.
+     // VKEY_CONVERT: Henkan key
+-- 
+2.35.1
+
