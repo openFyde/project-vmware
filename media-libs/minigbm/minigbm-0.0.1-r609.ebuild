@@ -1,13 +1,13 @@
-# Copyright 2014 The Chromium OS Authors. All rights reserved.
+# Copyright 2014 The ChromiumOS Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
 
-CROS_WORKON_COMMIT="8ed9b31127ce03dbc8b5c8b78b03809af3ca8995"
-CROS_WORKON_TREE="7b8d1ba15706cca1d309540b57c228889bcb2016"
+CROS_WORKON_COMMIT="6fb145be9c91a22d9fa7a0a79b472864f8eb8ace"
+CROS_WORKON_TREE="b1b08597cd479b77dac627221dc8b1d5fe4ce7d5"
 CROS_WORKON_PROJECT="chromiumos/platform/minigbm"
 CROS_WORKON_LOCALNAME="../platform/minigbm"
-CROS_WORKON_OUTOFTREE_BUILD=1
+# CROS_WORKON_OUTOFTREE_BUILD=1
 
 inherit cros-sanitizers cros-workon cros-common.mk multilib
 
@@ -21,12 +21,12 @@ VIDEO_CARDS="
 	amdgpu exynos intel marvell mediatek msm
 	radeon radeonsi rockchip tegra vc4 virgl vmware
 "
-IUSE="-asan kernel-3_18 linear_align_256"
+IUSE="-asan linear_align_256"
 for card in ${VIDEO_CARDS}; do
 	IUSE+=" video_cards_${card}"
 done
 
-MINI_GBM_PLATFORMS_USE=( mt8183 mt8192 )
+MINI_GBM_PLATFORMS_USE=( mt8183 mt8186 mt8192 mt8195 sc7280)
 IUSE+=" ${MINI_GBM_PLATFORMS_USE[*]/#/minigbm_platform_}"
 
 RDEPEND="
@@ -41,7 +41,7 @@ DEPEND="${RDEPEND}
 	)"
 
 src_prepare() {
-  epatch ${FILESDIR}/vmware_minigbm.patch
+	epatch ${FILESDIR}/vmware_minigbm.patch
 	default
 	sanitizers-setup-env
 	cros-common.mk_src_prepare
@@ -54,13 +54,14 @@ src_configure() {
 	use video_cards_exynos && append-cppflags -DDRV_EXYNOS && export DRV_EXYNOS=1
 	use video_cards_intel && append-cppflags -DDRV_I915 && export DRV_I915=1
 	if use video_cards_intel ; then
-		if ! use kernel-3_18; then
-			append-cppflags -DI915_SCANOUT_Y_TILED
-		fi
+		append-cppflags -DI915_SCANOUT_Y_TILED
 	fi
 	use video_cards_marvell && append-cppflags -DDRV_MARVELL && export DRV_MARVELL=1
 	use minigbm_platform_mt8183 && append-cppflags -DMTK_MT8183
+	use minigbm_platform_mt8186 && append-cppflags -DMTK_MT8186
 	use minigbm_platform_mt8192 && append-cppflags -DMTK_MT8192
+	use minigbm_platform_mt8195 && append-cppflags -DMTK_MT8195
+	use minigbm_platform_sc7280 && append-cppflags -DSC_7280
 	use video_cards_mediatek && append-cppflags -DDRV_MEDIATEK && export DRV_MEDIATEK=1
 	use video_cards_msm && append-cppflags -DDRV_MSM && export DRV_MSM=1
 	use video_cards_radeon && append-cppflags -DDRV_RADEON && export DRV_RADEON=1
@@ -70,7 +71,7 @@ src_configure() {
 	use video_cards_vc4 && append-cppflags -DDRV_VC4 && export DRV_VC4=1
 	use video_cards_virgl && append-cppflags -DDRV_VIRGL && export DRV_VIRGL=1
 	use linear_align_256 && append-cppflags -DLINEAR_ALIGN_256
-  use video_cards_vmware && append-cppflags -DDRV_VMWGFX && export DRV_VMWGFX=1
+	use video_cards_vmware && append-cppflags -DDRV_VMWGFX && export DRV_VMWGFX=1
 	cros-common.mk_src_configure
 }
 
