@@ -15,7 +15,7 @@ RDEPEND="
     sys-devel/arc-build
     sys-devel/arc-llvm
     x11-libs/arc-libdrm
-    media-libs/arc-mesa
+    media-libs/arc-mesa-vmware
     media-libs/arc-cros-gralloc
 "
 

@@ -1,11 +1,13 @@
 app-emulation/open-vm-tools -icu resolutionkms fuse vgauth -deploypkg dnet -pam
-sys-devel/arc-build abi_x86_32 
+sys-devel/arc-build abi_x86_32
 media-libs/arc-cros-gralloc abi_x86_32
 sys-devel/arc-llvm abi_x86_32
-media-libs/arc-mesa abi_x86_32 egl gles1 gles2 shared-glapi -android_gles31 android_gles2 -android_aep
+media-libs/arc-mesa-vmware abi_x86_32 egl gles1 gles2 shared-glapi -android_gles31 android_gles2 -android_aep
 x11-libs/arc-libdrm abi_x86_32 libkms
 dev-libs/arc-libelf abi_x86_32
 sys-kernel/chromeos-kernel-4_19 -clang
 sys-kernel/chromeos-kernel-5_4 -clang -lld
 <sys-kernel/chromeos-kernel-4_19-9999 apply_patches
 <sys-kernel/chromeos-kernel-5_10-9999 apply_patches
+<sys-kernel/chromeos-kernel-5_15-9999 apply_patches
+sys-libs/ncurses unicode

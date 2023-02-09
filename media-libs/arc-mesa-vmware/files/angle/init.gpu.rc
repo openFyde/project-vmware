@@ -1,0 +1,13 @@
+# Copyright 2022 The ChromiumOS Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+on early-init
+    # Advertise opengles version 3.1.
+    setprop ro.opengles.version 196609
+    setprop ro.hardware.egl angle
+    # TODO b/238934525: remove emulateAdvancedBlendEquations
+    setprop debug.angle.feature_overrides_disabled emulateAdvancedBlendEquations
+    # TODO b/246378938: remove preferLinearFilterForYUV
+    # TODO b/246218584: remove mapUnspecifiedColorSpaceToPassThrough
+    setprop debug.angle.feature_overrides_enabled preferLinearFilterForYUV:mapUnspecifiedColorSpaceToPassThrough
