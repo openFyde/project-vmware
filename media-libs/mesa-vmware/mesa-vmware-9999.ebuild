@@ -18,7 +18,7 @@ HOMEPAGE="http://mesa3d.org/"
 # GLES[2]/gl[2]{,ext,platform}.h are SGI-B-2.0
 LICENSE="MIT SGI-B-2.0"
 
-IUSE="debug vulkan libglvnd perfetto zstd +vmware_mks"
+IUSE="debug vulkan libglvnd perfetto zstd vmware_mks"
 
 COMMON_DEPEND="
 	dev-libs/expat:=
@@ -64,7 +64,7 @@ src_configure() {
 		-Dplatforms=
 		-Dtools=freedreno
 		--buildtype $(usex debug debug release)
-		-Dvulkan-drivers=$(usex vulkan freedreno '')
+		-Dvulkan-drivers=
 	)
 
 	meson_src_configure

@@ -144,7 +144,7 @@ multilib_src_configure() {
 	fi
 
 	if use egl; then
-		GALLIUM_DRIVERS=virgl
+		GALLIUM_DRIVERS=svga
 	fi
 
 	if use vulkan; then
@@ -243,7 +243,7 @@ multilib_src_install() {
 	newexe "${BUILD_DIR}/src/mapi/es2api/libGLESv2_mesa.so" libGLESv2_mesa.so
 
 	exeinto "${ARC_VM_PREFIX}/vendor/$(get_libdir)/dri"
-	newexe "${BUILD_DIR}/src/gallium/targets/dri/libgallium_dri.so" vmware_dri.so
+	newexe "${BUILD_DIR}/src/gallium/targets/dri/libgallium_dri.so" vmwgfx_dri.so
 }
 
 multilib_src_install_all() {

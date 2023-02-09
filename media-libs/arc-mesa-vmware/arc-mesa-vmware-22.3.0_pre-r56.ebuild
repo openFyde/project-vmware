@@ -36,7 +36,7 @@ IUSE="${IUSE_VIDEO_CARDS}
 	+android_gles31 -android_gles32 -android_vulkan_compute_0 -angle -swvulkan
 	+cheets classic debug dri +egl +gallium
 	-gbm +gles1 +gles2 -llvm +nptl pic selinux +shared-glapi -vulkan -X xlib-glx
-	cheets_user cheets_user_64 +vmware_mks"
+	cheets_user cheets_user_64 vmware_mks"
 
 # llvmpipe requires ARC++ _userdebug images, ARC++ _user images can't use it
 # (b/33072485, b/28802929).
