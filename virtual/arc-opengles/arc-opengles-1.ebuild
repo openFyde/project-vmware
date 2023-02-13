@@ -11,5 +11,5 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="media-libs/arc-mesa-vmware"
+RDEPEND="media-libs/arc-mesa"
 DEPEND=""

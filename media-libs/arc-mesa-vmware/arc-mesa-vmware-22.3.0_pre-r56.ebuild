@@ -4,12 +4,13 @@
 
 EAPI="6"
 
-CROS_WORKON_COMMIT="c505553d1d2ebf7ad4dc4f3230211772fcb3ad56"
-CROS_WORKON_TREE="5c361e1baa1641dce7a287154cc695982e99ea21"
-EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
+CROS_WORKON_COMMIT="234c4b61a4ee0b838291d042668ec077862547d3"
+CROS_WORKON_TREE="902a4e41f0eff180d5e0194d3c73759c06ac22bb"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
-CROS_WORKON_LOCALNAME="mesa-arcvm"
-CROS_WORKON_EGIT_BRANCH="chromeos-arcvm"
+CROS_WORKON_LOCALNAME="mesa-freedreno"
+CROS_WORKON_EGIT_BRANCH="chromeos-freedreno"
+
+EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
 
 inherit base meson multilib-minimal flag-o-matic toolchain-funcs cros-workon arc-build cros-sanitizers
 
@@ -36,7 +37,7 @@ IUSE="${IUSE_VIDEO_CARDS}
 	+android_gles31 -android_gles32 -android_vulkan_compute_0 -angle -swvulkan
 	+cheets classic debug dri +egl +gallium
 	-gbm +gles1 +gles2 -llvm +nptl pic selinux +shared-glapi -vulkan -X xlib-glx
-	cheets_user cheets_user_64 vmware_mks"
+	cheets_user cheets_user_64 arcpp arcvm vmware_mks"
 
 # llvmpipe requires ARC++ _userdebug images, ARC++ _user images can't use it
 # (b/33072485, b/28802929).
@@ -60,7 +61,7 @@ QA_EXECSTACK="usr/lib*/opengl/xorg-x11/lib/libGL.so*"
 QA_WX_LOAD="usr/lib*/opengl/xorg-x11/lib/libGL.so*"
 
 # Fix lint errors
-: "${ARC_VM_PREFIX:=}"
+: "${ARC_PREFIX:=}"
 : "${ARC_SYSROOT:=}"
 
 # Think about: ggi, fbcon, no-X configs
@@ -77,7 +78,7 @@ pkg_setup() {
 	# upgraded by then.
 	local d
 	for d in EGL GL GLES GLES2 GLES3 KHR; do
-		local replaced_link="${ROOT}${ARC_VM_PREFIX}/vendor/include/${d}"
+		local replaced_link="${ROOT}${ARC_PREFIX}/vendor/include/${d}"
 		if [[ -L "${replaced_link}" ]]; then
 			rm -f "${replaced_link}"
 		fi
@@ -191,7 +192,7 @@ multilib_src_configure() {
 	arc-build-create-cross-file
 
 	emesonargs+=(
-		--prefix="${ARC_VM_PREFIX}/vendor"
+		--prefix="${ARC_PREFIX}/vendor"
 		--sysconfdir=/system/vendor/etc
 		-Ddri-search-path="/system/$(get_libdir)/dri:/system/vendor/$(get_libdir)/dri"
 		-Dgallium-va=false
@@ -229,28 +230,28 @@ multilib_src_compile() {
 
 multilib_src_install() {
 	if use vulkan; then
-		exeinto "${ARC_VM_PREFIX}/vendor/$(get_libdir)/hw"
+		exeinto "${ARC_PREFIX}/vendor/$(get_libdir)/hw"
 		newexe "${BUILD_DIR}"/src/virtio/vulkan/libvulkan_virtio.so vulkan.cheets.so
 	fi
 
 	# Install symlink for angle GLESv2 lib
 	if use angle; then
-		dosym egl/libGLESv2_angle.so "${ARC_VM_PREFIX}/vendor/$(get_libdir)/libGLESv2_angle.so"
+		dosym egl/libGLESv2_angle.so "${ARC_PREFIX}/vendor/$(get_libdir)/libGLESv2_angle.so"
 	fi
 
 	if ! use egl; then
 		return
 	fi
 
-	exeinto "${ARC_VM_PREFIX}/vendor/$(get_libdir)"
+	exeinto "${ARC_PREFIX}/vendor/$(get_libdir)"
 	newexe "${BUILD_DIR}/src/mapi/shared-glapi/libglapi.so.0" libglapi.so.0
 
-	exeinto "${ARC_VM_PREFIX}/vendor/$(get_libdir)/egl"
+	exeinto "${ARC_PREFIX}/vendor/$(get_libdir)/egl"
 	newexe "${BUILD_DIR}/src/egl/libEGL_mesa.so" libEGL_mesa.so
 	newexe "${BUILD_DIR}/src/mapi/es1api/libGLESv1_CM_mesa.so" libGLESv1_CM_mesa.so
 	newexe "${BUILD_DIR}/src/mapi/es2api/libGLESv2_mesa.so" libGLESv2_mesa.so
 
-	exeinto "${ARC_VM_PREFIX}/vendor/$(get_libdir)/dri"
+	exeinto "${ARC_PREFIX}/vendor/$(get_libdir)/dri"
 	newexe "${BUILD_DIR}/src/gallium/targets/dri/libgallium_dri.so" vmwgfx_dri.so
 }
 
@@ -262,7 +263,7 @@ multilib_src_install_all() {
 	# <https://android.googlesource.com/platform/frameworks/native/+/master/data/etc>.
 
 	# Install init files to advertise supported API versions.
-	insinto "${ARC_VM_PREFIX}/vendor/etc/init"
+	insinto "${ARC_PREFIX}/vendor/etc/init"
 	if use angle; then
 		einfo "Using angle."
 		doins "${FILESDIR}/angle/init.gpu.rc"
@@ -281,10 +282,10 @@ multilib_src_install_all() {
 	# Install vulkan related files.
 	if use vulkan; then
 		einfo "Using android vulkan."
-		insinto "${ARC_VM_PREFIX}/vendor/etc/init"
+		insinto "${ARC_PREFIX}/vendor/etc/init"
 		doins "${FILESDIR}/vulkan.rc"
 
-		insinto "${ARC_VM_PREFIX}/vendor/etc/permissions"
+		insinto "${ARC_PREFIX}/vendor/etc/permissions"
 		doins "${FILESDIR}/android.hardware.vulkan.version-1_1.xml"
 		if use video_cards_intel || use video_cards_mediatek || use video_cards_msm; then
 			doins "${FILESDIR}/android.hardware.vulkan.level-1.xml"
@@ -293,26 +294,26 @@ multilib_src_install_all() {
 		fi
 	elif use swvulkan; then
 		einfo "Using swiftshader vulkan."
-		insinto "${ARC_VM_PREFIX}/vendor/etc/init"
+		insinto "${ARC_PREFIX}/vendor/etc/init"
 		doins "${FILESDIR}/sw.vulkan.rc"
 	fi
 
 	if use android_vulkan_compute_0; then
 		einfo "Using android vulkan_compute_0."
-		insinto "${ARC_VM_PREFIX}/vendor/etc/permissions"
+		insinto "${ARC_PREFIX}/vendor/etc/permissions"
 		doins "${FILESDIR}/android.hardware.vulkan.compute-0.xml"
 	fi
 
 	# Install permission file to declare opengles aep support.
 	if use android_aep; then
 		einfo "Using android aep."
-		insinto "${ARC_VM_PREFIX}/vendor/etc/permissions"
+		insinto "${ARC_PREFIX}/vendor/etc/permissions"
 		doins "${FILESDIR}/android.hardware.opengles.aep.xml"
 	fi
 
 	# Install the dri header for arc-cros-gralloc
 	if use egl; then
-		insinto "${ARC_VM_PREFIX}/vendor/include/GL"
+		insinto "${ARC_PREFIX}/vendor/include/GL"
 		doins -r "${S}/include/GL/internal"
 	fi
 }

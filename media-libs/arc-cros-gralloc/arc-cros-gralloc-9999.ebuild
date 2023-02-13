@@ -14,7 +14,7 @@ LICENSE="BSD-Google"
 SLOT="0"
 KEYWORDS="~*"
 
-VIDEO_CARDS="amdgpu exynos intel marvell mediatek msm rockchip tegra virgl"
+VIDEO_CARDS="amdgpu exynos intel marvell mediatek msm rockchip tegra virgl vmware"
 # shellcheck disable=SC2086
 IUSE="$(printf 'video_cards_%s ' ${VIDEO_CARDS})"
 MINI_GBM_PLATFORMS_USE=( mt8183 mt8186 mt8192 mt8195 sc7280 )
@@ -90,6 +90,8 @@ src_configure() {
 	if use video_cards_virgl; then
 		append-cppflags -DVIRTIO_GPU_NEXT
 	fi
+
+  use video_cards_vmware && append-cppflags -DDRV_VMWGFX && export DRV_VMWGFX=1
 
 	multilib-minimal_src_configure
 }
