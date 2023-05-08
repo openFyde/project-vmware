@@ -11,5 +11,5 @@ SLOT="0"
 KEYWORDS="*"
 IUSE=""
 
-RDEPEND="media-libs/mesa-vmware"
+RDEPEND="media-libs/mesa-reven"
 DEPEND=""

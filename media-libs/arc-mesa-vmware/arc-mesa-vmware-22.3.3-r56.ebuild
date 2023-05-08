@@ -2,12 +2,15 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/media-libs/mesa/mesa-7.9.ebuild,v 1.3 2010/12/05 17:19:14 arfrever Exp $
 
-EAPI="6"
+EAPI="7"
+
+CROS_WORKON_COMMIT="484ba115709176ba761f70f652eaee387e9ae7d8"
+CROS_WORKON_TREE="7a0e39b057036b451cac9f794b6572f9b6f26798"
+CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
+CROS_WORKON_LOCALNAME="mesa-reven"
+CROS_WORKON_EGIT_BRANCH="chromeos-reven"
 
 EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
-CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
-CROS_WORKON_LOCALNAME="mesa-arcvm"
-CROS_WORKON_EGIT_BRANCH="chromeos-arcvm"
 
 inherit meson multilib-minimal flag-o-matic toolchain-funcs cros-workon arc-build cros-sanitizers
 
@@ -19,7 +22,7 @@ HOMEPAGE="http://mesa3d.sourceforge.net/"
 # GLES[2]/gl[2]{,ext,platform}.h are SGI-B-2.0
 LICENSE="MIT LGPL-3 SGI-B-2.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="amdgpu radeon"
@@ -117,6 +120,11 @@ src_prepare() {
 		epatch "${FILESDIR}/gles2/0001-limit-gles-version.patch"
 	fi
 
+  EPATCH_FORCE="yes" \
+  EPATCH_SOURCE="${FILESDIR}/patches" \
+  EPATCH_SUFFIX="patch" \
+  epatch
+
 	default
 }
 
@@ -148,7 +156,7 @@ multilib_src_configure() {
 	fi
 
 	if use vulkan; then
-		VULKAN_DRIVERS=virtio-experimental
+		VULKAN_DRIVERS=""
 	fi
 
 	export LLVM_CONFIG=${SYSROOT}/usr/bin/llvm-config-host
