@@ -2030,7 +2030,7 @@ Index: minigbm/vmwgfx.c
 ===================================================================
 --- /dev/null
 +++ minigbm/vmwgfx.c
-@@ -0,0 +1,219 @@
+@@ -0,0 +1,224 @@
 +/*
 + * Copyright 2018 The FydeOS Authors. All rights reserved.
 + * Use of this source code is governed by a BSD-style license that can be
@@ -2052,9 +2052,9 @@ Index: minigbm/vmwgfx.c
 +
 +static const uint32_t render_target_formats[] = { DRM_FORMAT_ARGB8888, DRM_FORMAT_XRGB8888,
 +						  DRM_FORMAT_XRGB1555, DRM_FORMAT_RGB565 ,
-+						  DRM_FORMAT_ABGR8888 };
++						  DRM_FORMAT_ABGR8888, DRM_FORMAT_XBGR8888};
 +
-+static const uint32_t texture_source_formats[] = { DRM_FORMAT_R8, DRM_FORMAT_NV12,
++static const uint32_t texture_source_formats[] = { DRM_FORMAT_R8, DRM_FORMAT_NV12, DRM_FORMAT_YUYV,
 +                                                   DRM_FORMAT_YVU420, DRM_FORMAT_YVU420_ANDROID };
 +
 +static int vmwgfx_init(struct driver *drv)
@@ -2064,9 +2064,11 @@ Index: minigbm/vmwgfx.c
 +
 +  drv_add_combinations(drv, texture_source_formats, ARRAY_SIZE(texture_source_formats),
 +                       &LINEAR_METADATA, BO_USE_TEXTURE_MASK);
-+  drv_modify_combination(drv, DRM_FORMAT_NV12, &LINEAR_METADATA, BO_USE_SCANOUT |
++  drv_modify_combination(drv, DRM_FORMAT_NV12, &LINEAR_METADATA, BO_USE_SCANOUT | BO_USE_SW_MASK |  BO_USE_LINEAR |
 +                                 BO_USE_CAMERA_READ | BO_USE_CAMERA_WRITE | BO_USE_HW_VIDEO_DECODER |
 +                                 BO_USE_HW_VIDEO_ENCODER);
++  drv_modify_combination(drv, DRM_FORMAT_YUYV, &LINEAR_METADATA, BO_USE_HW_VIDEO_DECODER | BO_USE_SCANOUT | BO_USE_LINEAR |
++                                  BO_USE_TEXTURE | BO_USE_CAMERA_READ | BO_USE_SW_MASK);
 +  drv_modify_combination(drv, DRM_FORMAT_R8, &LINEAR_METADATA,
 +                                  BO_USE_SW_MASK |  BO_USE_LINEAR | BO_USE_HW_VIDEO_DECODER | BO_USE_HW_VIDEO_ENCODER |
 +                                 BO_USE_CAMERA_READ | BO_USE_CAMERA_WRITE);
@@ -2105,6 +2107,7 @@ Index: minigbm/vmwgfx.c
 +	case DRM_FORMAT_ARGB8888:
 +		return SVGA3D_B8G8R8A8_UNORM;
 +	case DRM_FORMAT_XRGB8888:
++  case DRM_FORMAT_XBGR8888:
 +	return SVGA3D_B8G8R8X8_UNORM;
 +	case DRM_FORMAT_XRGB1555:
 +		return SVGA3D_X1R5G5B5;
@@ -2112,6 +2115,8 @@ Index: minigbm/vmwgfx.c
 +		return SVGA3D_R5G6B5;
 +	case DRM_FORMAT_YVU420_ANDROID:
 +	case DRM_FORMAT_YVU420:
++		return SVGA3D_UYVY;
++	case DRM_FORMAT_YUYV:
 +		return SVGA3D_YUY2;
 +	case DRM_FORMAT_NV12:
 +		return SVGA3D_NV12;
@@ -2153,6 +2158,7 @@ Index: minigbm/vmwgfx.c
 +    extra_flag = SVGA3D_SURFACE_BIND_STREAM_OUTPUT | SVGA3D_SURFACE_TRANSFER_FROM_BUFFER;
 +		break;
 +	case DRM_FORMAT_YVU420:
++	case DRM_FORMAT_YUYV:
 +	case DRM_FORMAT_NV12:
 +		/* Adjust the height to include room for chroma planes */
 +		aligned_height = 3 * DIV_ROUND_UP(height, 2);
@@ -2161,7 +2167,6 @@ Index: minigbm/vmwgfx.c
 +	default:
 +		break;
 +	}
-+
 +
 +  bo->meta.total_size = 0;
 +  memset(&create_arg, 0, sizeof(create_arg));
@@ -2199,7 +2204,7 @@ Index: minigbm/vmwgfx.c
 +  return vmwgfx_bo_create_with_modifiers(bo, width, height, format, modifiers, ARRAY_SIZE(modifiers));
 +}
 +
-+static void *vmwgfx_bo_map(struct bo *bo, struct vma *vma, size_t plane, uint32_t map_flags)
++static void *vmwgfx_bo_map(struct bo *bo, struct vma *vma, uint32_t map_flags)
 +{
 +   union drm_vmw_gb_surface_reference_arg s_arg;
 +   struct drm_vmw_surface_arg *req = &s_arg.req;

@@ -108,22 +108,20 @@ src_prepare() {
 	# Restrict gles version based on USE flag. (See crbug.com/30202361, b/30202371, b/31041422, b:68023287)
 	if use android_gles32; then
 		einfo "Limiting android to gles32."
-		epatch "${FILESDIR}/gles32/0001-limit-gles-version.patch"
+		eapply "${FILESDIR}/gles32/0001-limit-gles-version.patch"
 	elif use android_gles31; then
 		einfo "Limiting android to gles31."
-		epatch "${FILESDIR}/gles31/0001-limit-gles-version.patch"
+		eapply "${FILESDIR}/gles31/0001-limit-gles-version.patch"
 	elif use android_gles30; then
 		einfo "Limiting android to gles30."
-		epatch "${FILESDIR}/gles30/0001-limit-gles-version.patch"
+		eapply "${FILESDIR}/gles30/0001-limit-gles-version.patch"
 	elif use android_gles2; then
 		einfo "Limiting android to gles2."
-		epatch "${FILESDIR}/gles2/0001-limit-gles-version.patch"
+		eapply "${FILESDIR}/gles2/0001-limit-gles-version.patch"
 	fi
 
-  EPATCH_FORCE="yes" \
-  EPATCH_SOURCE="${FILESDIR}/patches" \
-  EPATCH_SUFFIX="patch" \
-  epatch
+  eapply ${FILESDIR}/patches/angle_draw.patch
+  eapply ${FILESDIR}/patches/svga_format_v20.patch
 
 	default
 }
@@ -195,11 +193,11 @@ multilib_src_configure() {
 		--prefix="${ARC_PREFIX}/vendor"
 		--sysconfdir=/system/vendor/etc
 		-Ddri-search-path="/system/$(get_libdir)/dri:/system/vendor/$(get_libdir)/dri"
-		-Dgallium-va=false
-		-Dgallium-vdpau=false
+		-Dgallium-va=disabled
+		-Dgallium-vdpau=disabled
 		-Dgallium-omx=disabled
 		-Dglx=disabled
-		-Ddri3=false
+		-Ddri3=disabled
 		-Dgles-lib-suffix=_mesa
 		-Degl-lib-suffix=_mesa
 		-Dplatforms="${EGL_PLATFORM}"
