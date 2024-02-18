@@ -2,8 +2,33 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 ===================================================================
 --- kernel-5_15.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 +++ kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -1196,11 +1196,14 @@ static int vmw_kms_new_framebuffer_surfa
- 
+@@ -1170,19 +1169,19 @@ static int vmw_kms_new_framebuffer_surfa
+ 	/*
+ 	 * Sanity checks.
+ 	 */
+-
+ 	if (!drm_any_plane_has_format(&dev_priv->drm,
+ 				      mode_cmd->pixel_format,
+ 				      mode_cmd->modifier[0])) {
+-		drm_dbg(&dev_priv->drm,
+-			"unsupported pixel format %p4cc / modifier 0x%llx\n",
++	//	drm_dbg(&dev_priv->drm,
++			DRM_ERROR("unsupported pixel format %p4cc / modifier 0x%llx\n",
+ 			&mode_cmd->pixel_format, mode_cmd->modifier[0]);
+ 		return -EINVAL;
+ 	}
+-
+ 	/* Surface must be marked as a scanout. */
+-	if (unlikely(!surface->metadata.scanout))
++	if (unlikely(!surface->metadata.scanout)) {
++    DRM_ERROR("surface->metadata was not marked as scanout");
+ 		return -EINVAL;
++  }
+
+ 	if (unlikely(surface->metadata.mip_levels[0] != 1 ||
+ 		     surface->metadata.num_sizes != 1 ||
+@@ -1196,11 +1195,15 @@ static int vmw_kms_new_framebuffer_surfa
+
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
 -		format = SVGA3D_A8R8G8B8;
@@ -11,6 +36,7 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
  		break;
  	case DRM_FORMAT_XRGB8888:
 -		format = SVGA3D_X8R8G8B8;
++  case DRM_FORMAT_XBGR8888:
 +		format = SVGA3D_B8G8R8X8_UNORM;
  		break;
 +  case DRM_FORMAT_ABGR8888:
@@ -19,8 +45,8 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
  	case DRM_FORMAT_RGB565:
  		format = SVGA3D_R5G6B5;
  		break;
-@@ -1431,11 +1434,17 @@ static int vmw_create_bo_proxy(struct dr
- 
+@@ -1431,11 +1434,18 @@ static int vmw_create_bo_proxy(struct dr
+
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
 +	        format = SVGA3D_B8G8R8A8_UNORM;
@@ -28,6 +54,7 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 +		break;
  	case DRM_FORMAT_XRGB8888:
 -		format = SVGA3D_X8R8G8B8;
++  case DRM_FORMAT_XBGR8888:
 +		format = SVGA3D_B8G8R8X8_UNORM;
  		bytes_pp = 4;
  		break;
@@ -43,13 +70,15 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 ===================================================================
 --- kernel-5_15.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 +++ kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-@@ -249,6 +249,7 @@ static const uint32_t __maybe_unused vmw
+@@ -249,7 +249,9 @@ static const uint32_t __maybe_unused vmw
+ 	DRM_FORMAT_XRGB1555,
  	DRM_FORMAT_RGB565,
  	DRM_FORMAT_XRGB8888,
++  DRM_FORMAT_XBGR8888,
  	DRM_FORMAT_ARGB8888,
 +	DRM_FORMAT_ABGR8888,
  };
- 
+
  static const uint32_t __maybe_unused vmw_cursor_plane_formats[] = {
 Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
 ===================================================================
@@ -65,6 +94,6 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
 +		metadata->format == SVGA3D_B8G8R8A8_UNORM ||
 +		metadata->format == SVGA3D_B8G8R8X8_UNORM
 +	    )) {
- 
+
  		srf->snooper.image = kzalloc(64 * 64 * 4, GFP_KERNEL);
  		if (!srf->snooper.image) {

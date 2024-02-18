@@ -3,8 +3,8 @@
 
 EAPI=7
 
-CROS_WORKON_COMMIT="484ba115709176ba761f70f652eaee387e9ae7d8"
-CROS_WORKON_TREE="7a0e39b057036b451cac9f794b6572f9b6f26798"
+CROS_WORKON_COMMIT="d2938adb9b7642b0febb9b5229a0e8e93bfc99a2"
+CROS_WORKON_TREE="b6ef883876ae07f082105e3d5edc15c412660a9e"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
 CROS_WORKON_EGIT_BRANCH="chromeos-reven"
 CROS_WORKON_LOCALNAME="mesa-reven"
@@ -35,7 +35,9 @@ REQUIRED_USE="video_cards_amdgpu? ( llvm )
 
 COMMON_DEPEND="
 	dev-libs/expat:=
+	sys-libs/zlib:=
 	llvm? ( virtual/libelf:= )
+	x11-libs/libva:=
 	zstd? ( app-arch/zstd )
 	>=x11-libs/libdrm-2.4.60:=
 "
@@ -131,6 +133,9 @@ src_configure() {
 		-Dgallium-drivers="$(driver_list "${GALLIUM_DRIVERS[*]}")"
 		-Dvulkan-drivers="$(driver_list "${VULKAN_DRIVERS[*]}")"
 		--buildtype $(usex debug debug release)
+		-Dgallium-va=disabled
+		-Dva-libs-path="${EPREFIX}/usr/$(get_libdir)/va/drivers"
+		-Dvideo-codecs="h264dec,h264enc,h265dec,h265enc,vc1dec"
 	)
 
 	meson_src_configure

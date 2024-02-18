@@ -1,0 +1,22 @@
+Index: mesa-arcvm/src/util/blake3/meson.build
+===================================================================
+--- mesa-arcvm.orig/src/util/blake3/meson.build
++++ mesa-arcvm/src/util/blake3/meson.build
+@@ -3,7 +3,7 @@ files_blake3 = [
+     'blake3_dispatch.c',
+     'blake3_portable.c'
+ ]
+-blake3_defs = []
++blake3_defs = ['-DBLAKE3_NO_AVX512']
+ 
+ is_windows = host_machine.system() == 'windows'
+ is_msvc = meson.get_compiler('c').get_id() == 'msvc'
+@@ -25,7 +25,7 @@ if cpu_family == 'x86_64'
+       files_blake3 += ['blake3_sse2_x86-64_windows_gnu.S', 'blake3_sse41_x86-64_windows_gnu.S', 'blake3_avx2_x86-64_windows_gnu.S', 'blake3_avx512_x86-64_windows_gnu.S']
+     endif
+   else
+-    files_blake3 += ['blake3_sse2_x86-64_unix.S', 'blake3_sse41_x86-64_unix.S', 'blake3_avx2_x86-64_unix.S', 'blake3_avx512_x86-64_unix.S']
++    files_blake3 += ['blake3_sse2_x86-64_unix.S', 'blake3_sse41_x86-64_unix.S', 'blake3_avx2_x86-64_unix.S']
+   endif
+ elif cpu_family == 'x86'
+   # There are no assembly versions for 32-bit x86. Compiling the C versions require a different compilation flag per

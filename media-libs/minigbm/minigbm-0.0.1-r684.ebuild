@@ -1,10 +1,10 @@
 # Copyright 2014 The ChromiumOS Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="6"
+EAPI="7"
 
-CROS_WORKON_COMMIT="ad7928ef460fc28daca7e363dfc69563b2c1e531"
-CROS_WORKON_TREE="31f876376272c35d83e30c913169879c3036695b"
+CROS_WORKON_COMMIT="90b2d4773273b3ea180aff8f995d58e7b7604eb5"
+CROS_WORKON_TREE="0fea7b370b8eeda4f4e253bb916c5e512fd48906"
 CROS_WORKON_PROJECT="chromiumos/platform/minigbm"
 CROS_WORKON_LOCALNAME="../platform/minigbm"
 CROS_WORKON_OUTOFTREE_BUILD=1
@@ -44,7 +44,7 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	default
-  epatch ${FILESDIR}/vmware_minigbm.patch
+  eapply ${FILESDIR}/vmware_minigbm.patch
 	sanitizers-setup-env
 	cros-common.mk_src_prepare
 }
@@ -69,7 +69,7 @@ src_configure() {
 	use minigbm_platform_mt8192 && append-cppflags -DMTK_MT8192
 	use minigbm_platform_mt8195 && append-cppflags -DMTK_MT8195
 	use minigbm_platform_sc7280 && append-cppflags -DSC_7280
-	use video_cards_mediatek && append-cppflags -DDRV_MEDIATEK && export DRV_MEDIATEK=1
+	use video_cards_mediatek && append-cppflags -DDRV_MEDIATEK -DDRV_PANFROST && export DRV_MEDIATEK=1
 	use video_cards_msm && append-cppflags -DDRV_MSM && export DRV_MSM=1
 	use video_cards_radeon && append-cppflags -DDRV_RADEON && export DRV_RADEON=1
 	use video_cards_radeonsi && append-cppflags -DDRV_RADEON && export DRV_RADEON=1

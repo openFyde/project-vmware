@@ -4,6 +4,8 @@
 
 EAPI="7"
 
+CROS_WORKON_COMMIT="2e645ed31444e105d525bf430d57c2dc55ca24f5"
+CROS_WORKON_TREE="5d354ce24eca593bf73bc356e5e8ba358117a215"
 EGIT_REPO_URI="git://anongit.freedesktop.org/mesa/mesa"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
 CROS_WORKON_LOCALNAME="mesa-arcvm"
@@ -19,7 +21,7 @@ HOMEPAGE="http://mesa3d.sourceforge.net/"
 # GLES[2]/gl[2]{,ext,platform}.h are SGI-B-2.0
 LICENSE="MIT LGPL-3 SGI-B-2.0"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="*"
 
 INTEL_CARDS="intel"
 RADEON_CARDS="amdgpu radeon"
@@ -93,6 +95,12 @@ src_prepare() {
 		echo "#define MESA_GIT_SHA1 \"git-deadbeef\"" > src/git_sha1.h
 	fi
 
+  if [[ ${PV} != 9999* && -n ${SRC_PATCHES} ]]; then
+    EPATCH_FORCE="yes" \
+    EPATCH_SOURCE="${WORKDIR}/patches" \
+    EPATCH_SUFFIX="patch" \
+    epatch
+  fi
 	# FreeBSD 6.* doesn't have posix_memalign().
 	if [[ ${CHOST} == *-freebsd6.* ]]; then
 		sed -i \
@@ -125,6 +133,7 @@ src_prepare() {
 		einfo "Disable vulkan for roblox."
 		eapply "${FILESDIR}/CHROMIUM-Disable-vulkan-for-roblox.patch"
 	fi
+  eapply "${FILESDIR}/001-remove-avx512-for-compiling.patch"
 
 	default
 }
@@ -198,6 +207,7 @@ multilib_src_configure() {
 		-Ddri-search-path="/system/$(get_libdir)/dri:/system/vendor/$(get_libdir)/dri"
 		-Dgallium-va=disabled
 		-Dgallium-vdpau=disabled
+    -Degl-native-platform=android
 		-Dgallium-omx=disabled
 		-Dglx=disabled
 		-Ddri3=disabled

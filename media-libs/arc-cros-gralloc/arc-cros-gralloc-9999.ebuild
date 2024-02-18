@@ -17,7 +17,7 @@ KEYWORDS="~*"
 VIDEO_CARDS="amdgpu exynos intel marvell mediatek msm rockchip tegra virgl vmware"
 # shellcheck disable=SC2086
 IUSE="$(printf 'video_cards_%s ' ${VIDEO_CARDS})"
-MINI_GBM_PLATFORMS_USE=( mt8183 mt8186 mt8188g mt8192 mt8195 sc7280 )
+MINI_GBM_PLATFORMS_USE=( mt8173 mt8183 mt8186 mt8188g mt8192 mt8195 sc7280 )
 IUSE+=" ${MINI_GBM_PLATFORMS_USE[*]/#/minigbm_platform_}"
 IUSE+=" arcpp"
 
@@ -62,6 +62,7 @@ src_configure() {
 	fi
 
 	if use video_cards_mediatek; then
+		use minigbm_platform_mt8173 && append-cppflags -DMTK_MT8173
 		use minigbm_platform_mt8183 && append-cppflags -DMTK_MT8183
 		use minigbm_platform_mt8186 && append-cppflags -DMTK_MT8186
 		use minigbm_platform_mt8188g && append-cppflags -DMTK_MT8188G
@@ -91,11 +92,7 @@ src_configure() {
 	if use video_cards_virgl; then
 		append-cppflags -DVIRTIO_GPU_NEXT
 	fi
-
-  if use  video_cards_vmware; then
-    export DRV_VMWGFX=1
-    append-cppflags -DDRV_VMWGFX
-  fi
+  use video_cards_vmware && append-cppflags -DDRV_VMWGFX && export DRV_VMWGFX=1
 
 	multilib-minimal_src_configure
 }

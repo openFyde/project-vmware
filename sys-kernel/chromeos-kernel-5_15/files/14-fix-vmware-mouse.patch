@@ -1,8 +1,8 @@
-diff --git a/drivers/input/mouse/vmmouse.c b/drivers/input/mouse/vmmouse.c
-index 148245c69be7..a3fd12d3f4da 100644
---- a/drivers/input/mouse/vmmouse.c
-+++ b/drivers/input/mouse/vmmouse.c
-@@ -194,18 +194,22 @@ static psmouse_ret_t vmmouse_report_events(struct psmouse *psmouse)
+Index: kernel-5_15/drivers/input/mouse/vmmouse.c
+===================================================================
+--- kernel-5_15.orig/drivers/input/mouse/vmmouse.c
++++ kernel-5_15/drivers/input/mouse/vmmouse.c
+@@ -194,18 +194,22 @@ static psmouse_ret_t vmmouse_report_even
  		/* Xorg seems to ignore wheel events on absolute devices */
  		input_report_rel(rel_dev, REL_WHEEL, -(s8)((u8) z));
  
@@ -28,7 +28,7 @@ index 148245c69be7..a3fd12d3f4da 100644
  
  	return PSMOUSE_FULL_PACKET;
  }
-@@ -447,18 +451,19 @@ int vmmouse_init(struct psmouse *psmouse)
+@@ -447,18 +451,19 @@ int vmmouse_init(struct psmouse *psmouse
  		 VMMOUSE_PSNAME, VMMOUSE_VENDOR, VMMOUSE_NAME);
  	abs_dev->phys = priv->phys;
  	abs_dev->name = priv->dev_name;

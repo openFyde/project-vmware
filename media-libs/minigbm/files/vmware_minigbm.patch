@@ -7,7 +7,7 @@ Index: minigbm/Makefile
  	CFLAGS += $(shell $(PKG_CONFIG) --cflags libdrm_vc4)
  endif
 +ifdef DRV_VMWGFX
-+	CFLAGS += $(shell $(PKG_CONFIG) --cflags libdrm_vmware)
++	CFLAGS += $(shell $(PKG_CONFIG) --cflags libdrm)
 +endif
  
  CPPFLAGS += $(PC_CFLAGS)
@@ -16,7 +16,7 @@ Index: minigbm/drv.c
 ===================================================================
 --- minigbm.orig/drv.c
 +++ minigbm/drv.c
-@@ -36,6 +36,9 @@ extern const struct backend backend_msm;
+@@ -39,6 +39,9 @@ extern const struct backend backend_msm;
  #ifdef DRV_VC4
  extern const struct backend backend_vc4;
  #endif
@@ -26,7 +26,7 @@ Index: minigbm/drv.c
  
  // Dumb / generic drivers
  extern const struct backend backend_evdi;
-@@ -65,6 +68,9 @@ static const struct backend *drv_backend
+@@ -68,6 +71,9 @@ static const struct backend *drv_backend
  #ifdef DRV_VC4
  	&backend_vc4,
  #endif
@@ -2072,7 +2072,7 @@ Index: minigbm/vmwgfx.c
 +  drv_modify_combination(drv, DRM_FORMAT_R8, &LINEAR_METADATA,
 +                                  BO_USE_SW_MASK |  BO_USE_LINEAR | BO_USE_HW_VIDEO_DECODER | BO_USE_HW_VIDEO_ENCODER |
 +                                 BO_USE_CAMERA_READ | BO_USE_CAMERA_WRITE);
-+
++  drv_logi("vmwgfx minigbm inited.");
 +  return drv_modify_linear_combinations(drv);
 +}
 +

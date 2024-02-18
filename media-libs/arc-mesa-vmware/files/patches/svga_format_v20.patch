@@ -1,7 +1,7 @@
-Index: mesa-freedreno/src/gallium/drivers/svga/svga_format.c
+Index: mesa-arcvm/src/gallium/drivers/svga/svga_format.c
 ===================================================================
---- mesa-freedreno.orig/src/gallium/drivers/svga/svga_format.c
-+++ mesa-freedreno/src/gallium/drivers/svga/svga_format.c
+--- mesa-arcvm.orig/src/gallium/drivers/svga/svga_format.c
++++ mesa-arcvm/src/gallium/drivers/svga/svga_format.c
 @@ -271,6 +271,8 @@ svga_translate_screen_target_format_vgpu
     switch (format) {
     case PIPE_FORMAT_B8G8R8A8_UNORM:
@@ -11,7 +11,7 @@ Index: mesa-freedreno/src/gallium/drivers/svga/svga_format.c
     case PIPE_FORMAT_B8G8R8X8_UNORM:
        return SVGA3D_B8G8R8X8_UNORM;
     case PIPE_FORMAT_B5G6R5_UNORM:
-@@ -2244,6 +2246,7 @@ svga_is_format_supported(struct pipe_scr
+@@ -2248,6 +2250,7 @@ svga_is_format_supported(struct pipe_scr
        /* VGPU10 formats */
        case SVGA3D_B8G8R8A8_UNORM:
        case SVGA3D_B8G8R8X8_UNORM:
@@ -19,3 +19,16 @@ Index: mesa-freedreno/src/gallium/drivers/svga/svga_format.c
        case SVGA3D_B5G6R5_UNORM:
        case SVGA3D_B8G8R8X8_UNORM_SRGB:
        case SVGA3D_B8G8R8A8_UNORM_SRGB:
+Index: mesa-arcvm/src/egl/drivers/dri2/egl_dri2.c
+===================================================================
+--- mesa-arcvm.orig/src/egl/drivers/dri2/egl_dri2.c
++++ mesa-arcvm/src/egl/drivers/dri2/egl_dri2.c
+@@ -324,7 +324,7 @@ dri2_get_dri_config(struct dri2_egl_conf
+    const bool double_buffer = surface_type == EGL_WINDOW_BIT;
+    const bool srgb = colorspace == EGL_GL_COLORSPACE_SRGB_KHR;
+ 
+-   return conf->dri_config[double_buffer][srgb];
++   return conf->dri_config[double_buffer][srgb] ? conf->dri_config[double_buffer][srgb]: conf->dri_config[double_buffer][!srgb];
+ }
+ 
+ static EGLBoolean

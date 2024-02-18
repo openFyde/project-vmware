@@ -2,8 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="7"
-CROS_WORKON_COMMIT="ad7928ef460fc28daca7e363dfc69563b2c1e531"
-CROS_WORKON_TREE="31f876376272c35d83e30c913169879c3036695b"
+CROS_WORKON_COMMIT="90b2d4773273b3ea180aff8f995d58e7b7604eb5"
+CROS_WORKON_TREE="0fea7b370b8eeda4f4e253bb916c5e512fd48906"
 CROS_WORKON_PROJECT="chromiumos/platform/minigbm"
 CROS_WORKON_LOCALNAME="../platform/minigbm"
 
@@ -93,7 +93,9 @@ src_configure() {
 	if use video_cards_virgl; then
 		append-cppflags -DVIRTIO_GPU_NEXT
 	fi
+
   use video_cards_vmware && append-cppflags -DDRV_VMWGFX && export DRV_VMWGFX=1
+
 	multilib-minimal_src_configure
 }
 

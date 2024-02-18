@@ -33,7 +33,9 @@ REQUIRED_USE="video_cards_amdgpu? ( llvm )
 
 COMMON_DEPEND="
 	dev-libs/expat:=
+	sys-libs/zlib:=
 	llvm? ( virtual/libelf:= )
+	x11-libs/libva:=
 	zstd? ( app-arch/zstd )
 	>=x11-libs/libdrm-2.4.60:=
 "
@@ -129,6 +131,9 @@ src_configure() {
 		-Dgallium-drivers="$(driver_list "${GALLIUM_DRIVERS[*]}")"
 		-Dvulkan-drivers="$(driver_list "${VULKAN_DRIVERS[*]}")"
 		--buildtype $(usex debug debug release)
+		-Dgallium-va=enabled
+		-Dva-libs-path="${EPREFIX}/usr/$(get_libdir)/va/drivers"
+		-Dvideo-codecs="h264dec,h264enc,h265dec,h265enc,vc1dec"
 	)
 
 	meson_src_configure

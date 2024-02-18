@@ -1,8 +1,8 @@
-Index: v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+Index: kernel-6_1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 ===================================================================
---- v6.1.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-+++ v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -1342,11 +1342,14 @@ static int vmw_kms_new_framebuffer_surfa
+--- kernel-6_1.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
++++ kernel-6_1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+@@ -1318,11 +1318,14 @@ static int vmw_kms_new_framebuffer_surfa
  
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
@@ -19,7 +19,7 @@ Index: v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
  	case DRM_FORMAT_RGB565:
  		format = SVGA3D_R5G6B5;
  		break;
-@@ -1577,11 +1580,17 @@ static int vmw_create_bo_proxy(struct dr
+@@ -1430,11 +1433,17 @@ static int vmw_create_bo_proxy(struct dr
  
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
@@ -39,11 +39,11 @@ Index: v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
  	case DRM_FORMAT_RGB565:
  	case DRM_FORMAT_XRGB1555:
  		format = SVGA3D_R5G6B5;
-Index: v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
+Index: kernel-6_1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 ===================================================================
---- v6.1.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-+++ v6.1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-@@ -250,6 +250,7 @@ static const uint32_t __maybe_unused vmw
+--- kernel-6_1.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
++++ kernel-6_1/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
+@@ -247,6 +247,7 @@ static const uint32_t __maybe_unused vmw
  	DRM_FORMAT_RGB565,
  	DRM_FORMAT_XRGB8888,
  	DRM_FORMAT_ARGB8888,
