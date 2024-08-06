@@ -8,8 +8,6 @@ sys-kernel/chromeos-kernel-5_4::chromiumos
 sys-kernel/chromeos-kernel-5_4::openfyde-patches
 sys-kernel/chromeos-kernel-5_10::chromiumos
 sys-kernel/chromeos-kernel-5_10::openfyde-patches
-sys-kernel/chromeos-kernel-5_15::chromiumos
-sys-kernel/chromeos-kernel-5_15::openfyde-patches
 sys-kernel/chromeos-kernel-6_1::chromiumos
 sys-kernel/chromeos-kernel-6_1::openfyde-patches
 chromeos-base/trunks::openfyde-patches

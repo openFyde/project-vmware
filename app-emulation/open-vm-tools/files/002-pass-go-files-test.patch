@@ -1,0 +1,67 @@
+Index: open-vm-tools-12.4.5-23787635/configure
+===================================================================
+--- open-vm-tools-12.4.5-23787635.orig/configure
++++ open-vm-tools-12.4.5-23787635/configure
+@@ -23423,7 +23423,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${CONTAINERD_PROTOPATH}/containers.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23452,7 +23452,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${TASKS_PROTOPATH}/tasks.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23481,7 +23481,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${DEP_PROTOPATH}/${TYPES_DIR}/mount.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23510,7 +23510,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${DEP_PROTOPATH}/${TYPES_DIR}/metrics.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23539,7 +23539,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${DEP_PROTOPATH}/${TYPES_DIR}/descriptor.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23568,7 +23568,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${DEP_PROTOPATH}/${TYPES_DIR}/task/task.proto"; then
+   eval "$as_ac_File=yes"
+@@ -23597,7 +23597,7 @@ if eval test \${$as_ac_File+y}
+ then :
+   printf %s "(cached) " >&6
+ else $as_nop
+-  test "$cross_compiling" = yes &&
++  test "$cross_compiling" = yes ||
+   as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
+ if test -r "${GOGO_PROTOPATH}/gogoproto/gogo.proto"; then
+   eval "$as_ac_File=yes"

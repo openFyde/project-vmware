@@ -2,7 +2,7 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 ===================================================================
 --- kernel-5_15.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 +++ kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
-@@ -1170,19 +1169,19 @@ static int vmw_kms_new_framebuffer_surfa
+@@ -1175,19 +1175,19 @@ static int vmw_kms_new_framebuffer_surfa
  	/*
  	 * Sanity checks.
  	 */
@@ -24,11 +24,11 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
 +    DRM_ERROR("surface->metadata was not marked as scanout");
  		return -EINVAL;
 +  }
-
+ 
  	if (unlikely(surface->metadata.mip_levels[0] != 1 ||
  		     surface->metadata.num_sizes != 1 ||
-@@ -1196,11 +1195,15 @@ static int vmw_kms_new_framebuffer_surfa
-
+@@ -1201,11 +1201,15 @@ static int vmw_kms_new_framebuffer_surfa
+ 
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
 -		format = SVGA3D_A8R8G8B8;
@@ -45,8 +45,8 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
  	case DRM_FORMAT_RGB565:
  		format = SVGA3D_R5G6B5;
  		break;
-@@ -1431,11 +1434,18 @@ static int vmw_create_bo_proxy(struct dr
-
+@@ -1436,11 +1440,18 @@ static int vmw_create_bo_proxy(struct dr
+ 
  	switch (mode_cmd->pixel_format) {
  	case DRM_FORMAT_ARGB8888:
 +	        format = SVGA3D_B8G8R8A8_UNORM;
@@ -70,15 +70,14 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 ===================================================================
 --- kernel-5_15.orig/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
 +++ kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_kms.h
-@@ -249,7 +249,9 @@ static const uint32_t __maybe_unused vmw
- 	DRM_FORMAT_XRGB1555,
- 	DRM_FORMAT_RGB565,
- 	DRM_FORMAT_XRGB8888,
-+  DRM_FORMAT_XBGR8888,
+@@ -250,6 +250,8 @@ static const uint32_t __maybe_unused vmw
  	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_ABGR8888,
+ 	DRM_FORMAT_RGB565,
+ 	DRM_FORMAT_XRGB1555,
++  DRM_FORMAT_XBGR8888,
++  DRM_FORMAT_ABGR8888,
  };
-
+ 
  static const uint32_t __maybe_unused vmw_cursor_plane_formats[] = {
 Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
 ===================================================================
@@ -94,6 +93,6 @@ Index: kernel-5_15/drivers/gpu/drm/vmwgfx/vmwgfx_surface.c
 +		metadata->format == SVGA3D_B8G8R8A8_UNORM ||
 +		metadata->format == SVGA3D_B8G8R8X8_UNORM
 +	    )) {
-
+ 
  		srf->snooper.image = kzalloc(64 * 64 * 4, GFP_KERNEL);
  		if (!srf->snooper.image) {

@@ -1,0 +1,13 @@
+Index: open-vm-tools-12.4.5-23787635/configure
+===================================================================
+--- open-vm-tools-12.4.5-23787635.orig/configure
++++ open-vm-tools-12.4.5-23787635/configure
+@@ -21165,7 +21165,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+ #   Canonical, Ubuntu and Debian: in /usr/share/gocode/src
+ #   openSUSE/SUSE: in /usr/share/go/<version>/contrib/src
+ #
+-   for d in /usr/share/gocode/src /usr/share/go/1.*/contrib/src; do
++   for d in /usr/share/gocode/src /usr/share/go/1.*/contrib/src $CUSTOM_GOPATH; do
+        if test -d "$d"/github.com; then
+            src_prefix="$d"
+            break

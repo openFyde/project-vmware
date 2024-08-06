@@ -15,7 +15,7 @@ inherit meson multilib-minimal flag-o-matic cros-workon arc-build
 DESCRIPTION="The Mesa 3D Graphics Library"
 HOMEPAGE="http://mesa3d.org/"
 
-KEYWORDS="~*"
+KEYWORDS="*"
 
 # Most files are MIT/X11.
 # Some files in src/glx are SGI-B-2.0.
@@ -163,4 +163,25 @@ multilib_src_install_all() {
 	# Install the dri header for arc-cros-gralloc
 	insinto "${ARC_PREFIX}/vendor/include/GL"
 	doins -r "${S}/include/GL/internal"
+}
+
+src_prepare() {
+   if use android_gles32; then
+           einfo "Limiting android to gles32."
+           eapply "${FILESDIR}/gles32/0001-limit-gles-version.patch"
+   elif use android_gles31; then
+           einfo "Limiting android to gles31."
+           eapply "${FILESDIR}/gles31/0001-limit-gles-version.patch"
+   elif use android_gles30; then
+           einfo "Limiting android to gles30."
+           eapply "${FILESDIR}/gles30/0001-limit-gles-version.patch"
+   elif use android_gles2; then
+           einfo "Limiting android to gles2."
+           eapply "${FILESDIR}/gles2/0001-limit-gles-version.patch"
+   fi
+
+  eapply ${FILESDIR}/patches/angle_draw.patch
+  eapply ${FILESDIR}/patches/svga_format_v20.patch
+  eapply ${FILESDIR}/001-remove-avx512-for-compiling.patch
+  default
 }

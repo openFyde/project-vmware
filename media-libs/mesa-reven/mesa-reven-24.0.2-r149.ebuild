@@ -3,11 +3,13 @@
 
 EAPI=7
 
+CROS_WORKON_COMMIT="f90bd1f4759967ea672807500694fd285ede0a0f"
+CROS_WORKON_TREE="4405aacb3e607c0900d16b36f7a2ad95ebc049d9"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
 CROS_WORKON_LOCALNAME="mesa-iris"
 CROS_WORKON_EGIT_BRANCH="chromeos-iris"
 
-KEYWORDS="~*"
+KEYWORDS="*"
 
 PYTHON_COMPAT=( python3_{8..11} )
 inherit meson flag-o-matic cros-workon cros-sanitizers python-any-r1
@@ -102,14 +104,14 @@ src_configure() {
 		-Dgallium-xa=disabled
 		-Dglvnd=$(usex libglvnd true false)
 		-Dperfetto=$(usex perfetto true false)
-		-Dintel-clc=system
+#		-Dintel-clc=system
 		$(meson_feature zstd)
 		# Set platforms empty to avoid the default "auto" setting. If
 		# platforms is empty meson.build will add surfaceless.
 		-Dplatforms=''
 		-Dtools="${tools}"
 		--buildtype $(usex debug debug release)
-		-Dvulkan-drivers=$(usex vulkan intel '')
+		-Dvulkan-drivers=''
 	)
 
 	meson_src_configure
@@ -146,3 +148,8 @@ src_install() {
 
 	rm -v -rf "${ED}/usr/include"
 }
+
+PATCHES=(
+  ${FILESDIR}/angle_draw.patch
+  ${FILESDIR}/svga_format_v20.patch
+)

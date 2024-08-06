@@ -2,8 +2,8 @@
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
-		<email>floppym@gentoo.org</email>
-		<name>Mike Gilbert</name>
+		<email>soap@gentoo.org</email>
+		<name>David Seifert</name>
 	</maintainer>
 	<longdescription>
 		The Open Virtual Machine Tools (open-vm-tools) are the open source
