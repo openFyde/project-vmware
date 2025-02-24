@@ -8,11 +8,11 @@ Signed-off-by: jinqiang zhang <jinqiang@fydeos.io>
  ui/base/ime/ash/input_method_ash.cc | 7 +++++++
  1 file changed, 7 insertions(+)
 
-diff --git a/ui/base/ime/ash/input_method_ash.cc b/ui/base/ime/ash/input_method_ash.cc
-index 05c334e60787a..f47712cd11e20 100644
---- a/ui/base/ime/ash/input_method_ash.cc
-+++ b/ui/base/ime/ash/input_method_ash.cc
-@@ -88,6 +88,13 @@ ui::EventDispatchDetails InputMethodAsh::DispatchKeyEvent(ui::KeyEvent* event) {
+Index: src/ui/base/ime/ash/input_method_ash.cc
+===================================================================
+--- src.orig/ui/base/ime/ash/input_method_ash.cc
++++ src/ui/base/ime/ash/input_method_ash.cc
+@@ -143,6 +143,13 @@ ui::EventDispatchDetails InputMethodAsh:
        keyboard->SetCapsLockEnabled(event->IsCapsLockOn());
      }
  
@@ -26,6 +26,3 @@ index 05c334e60787a..f47712cd11e20 100644
      // For JP106 language input keys, makes sure they can be passed to the app
      // so that the VDI web apps can be supported. See https://crbug.com/816341.
      // VKEY_CONVERT: Henkan key
--- 
-2.35.1
-
