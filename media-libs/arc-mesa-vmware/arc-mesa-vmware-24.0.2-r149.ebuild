@@ -9,6 +9,7 @@ CROS_WORKON_TREE="4405aacb3e607c0900d16b36f7a2ad95ebc049d9"
 CROS_WORKON_PROJECT="chromiumos/third_party/mesa"
 CROS_WORKON_LOCALNAME="mesa-iris"
 CROS_WORKON_EGIT_BRANCH="chromeos-iris"
+CROS_WORKON_MANUAL_UPREV="1"
 
 inherit meson multilib-minimal flag-o-matic cros-workon arc-build
 
@@ -48,12 +49,12 @@ DEPEND="
 "
 
 RDEPEND="${DEPEND}"
+RESTRICT="test" # see bug #236845
 
 src_configure() {
 	cros_optimize_package_for_speed
 
 	arc-build-select-clang
-
 	multilib-minimal_src_configure
 }
 
