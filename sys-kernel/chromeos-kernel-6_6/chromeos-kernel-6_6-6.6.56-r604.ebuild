@@ -36,3 +36,4 @@ inherit cros-workon cros-kernel
 HOMEPAGE="https://www.chromium.org/chromium-os/chromiumos-design-docs/chromium-os-kernel"
 DESCRIPTION="Chrome OS Linux Kernel 6.6"
 KEYWORDS="*"
+SKIP_OPENFYDE_KERNEL_PATCHES=1

@@ -3,6 +3,8 @@
 
 EAPI=7
 
+CROS_WORKON_COMMIT="e0a2083750ba876bd996047378f766f924bf221d"
+CROS_WORKON_TREE="b6359123ad6e3502066ff94eb2e7d5d0f5084091"
 CROS_WORKON_PROJECT="chromiumos/third_party/kernel"
 CROS_WORKON_LOCALNAME="kernel/v6.6"
 CROS_WORKON_EGIT_BRANCH="chromeos-6.6"
@@ -33,8 +35,6 @@ inherit cros-workon cros-kernel
 
 HOMEPAGE="https://www.chromium.org/chromium-os/chromiumos-design-docs/chromium-os-kernel"
 DESCRIPTION="Chrome OS Linux Kernel 6.6"
-KEYWORDS="~*"
+KEYWORDS="*"
 
-cros-kernel_have_patches() {
-  false
-}
+SKIP_OPENFYDE_KERNEL_PATCHES=1
