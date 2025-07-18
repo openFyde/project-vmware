@@ -1,0 +1,125 @@
+Index: v6.6/drivers/hid/hid-input.c
+===================================================================
+--- v6.6.orig/drivers/hid/hid-input.c
++++ v6.6/drivers/hid/hid-input.c
+@@ -13,6 +13,7 @@
+  * Vojtech Pavlik, Simunkova 1594, Prague 8, 182 00 Czech Republic
+  */
+ 
++#include <linux/math.h>
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/kernel.h>
+@@ -157,6 +158,69 @@ static struct hid_usage *hidinput_find_k
+ 	return NULL;
+ }
+ 
++struct input_dev *vmware_mouse[2] = {NULL, NULL};
++int abs_x = 16383;
++int abs_y = 16383;
++#define MAX_DX 32767
++#define MAX_DY 32767
++#define VMWARE_VENDOR 0x0e0f
++#define VMWARE_PRODUCT 0x0003
++
++static bool is_vmware_mouse(struct input_dev *input_dev) {
++  return input_dev->id.vendor == VMWARE_VENDOR &&
++    input_dev->id.product == VMWARE_PRODUCT;
++}
++
++static bool is_vmware_mouse_first(struct input_dev *input_dev) {
++  return input_dev == vmware_mouse[0];
++}
++#if 0
++static bool is_vmware_mouse_second(struct input_dev *input_dev) {
++  return input_dev == vmware_mouse[1];
++}
++#endif
++static int set_vmware_mouse_abs(struct input_dev *input, unsigned int type, unsigned int code, int value) {
++  int dx = 0;
++  if (!vmware_mouse[1]) {
++    pr_err("no vmware mouse [1] found\n");
++    return -1;
++  }
++  if (!is_vmware_mouse_first(input) || type != EV_ABS)
++    return -1;
++  if (code == ABS_X) {
++    dx = abs_x - value;
++    if (abs(dx) < MAX_DX)
++      input_event(vmware_mouse[1], EV_REL, REL_X, dx);
++    abs_x = value;
++  }else if (code == ABS_Y){
++    dx = abs_y - value;
++    if (abs(dx) < MAX_DY)
++      input_event(vmware_mouse[1], EV_REL, REL_Y, dx);
++    abs_y = value;
++  }
++  input_sync(vmware_mouse[1]);
++  return 0;
++}
++
++static void setup_vmware_mouse(struct input_dev *input) {
++  if (!is_vmware_mouse(input))
++    return;
++  if(!vmware_mouse[0])
++    vmware_mouse[0] = input;
++  else if (!vmware_mouse[1])
++    vmware_mouse[1] = input;
++  else
++    pr_err("too many vmware mouse.\n");
++}
++
++static void remove_vmware_mouse(struct input_dev *input) {
++  if (!is_vmware_mouse(input))
++    return;
++  vmware_mouse[0] = NULL;
++  vmware_mouse[1] = NULL;
++  pr_debug("remove vmware mouse\n");
++}
++
+ static struct hid_usage *hidinput_locate_usage(struct hid_device *hid,
+ 					const struct input_keymap_entry *ke,
+ 					unsigned int *index)
+@@ -1842,11 +1906,13 @@ void hidinput_hid_event(struct hid_devic
+ 		return;
+ 
+ 	/* report the usage code as scancode if the key status has changed */
++#if 0
+ 	if (usage->type == EV_KEY &&
+ 	    (!test_bit(usage->code, input->key)) == value)
+ 		input_event(input, EV_MSC, MSC_SCAN, usage->hid);
+-
+-	input_event(input, usage->type, usage->code, value);
++#endif
++  if (set_vmware_mouse_abs(input, usage->type, usage->code, value))
++    input_event(input, usage->type, usage->code, value);
+ 
+ 	if ((field->flags & HID_MAIN_ITEM_RELATIVE) &&
+ 	    usage->type == EV_KEY && value) {
+@@ -2216,7 +2282,7 @@ static struct hid_input *hidinput_alloca
+ 	list_add_tail(&hidinput->list, &hid->inputs);
+ 
+ 	INIT_LIST_HEAD(&hidinput->reports);
+-
++	setup_vmware_mouse(input_dev);
+ 	return hidinput;
+ 
+ fail:
+@@ -2266,7 +2332,7 @@ static void hidinput_cleanup_hidinput(st
+ {
+ 	struct hid_report *report;
+ 	int i, k;
+-
++	remove_vmware_mouse(hidinput->input);
+ 	list_del(&hidinput->list);
+ 	input_free_device(hidinput->input);
+ 	kfree(hidinput->name);
+@@ -2472,7 +2538,7 @@ int hidinput_connect(struct hid_device *
+ 			continue;
+ 		}
+ 
+-		if (input_register_device(hidinput->input))
++		if (!is_vmware_mouse_first(hidinput->input) && input_register_device(hidinput->input))
+ 			goto out_unwind;
+ 		hidinput->registered = true;
+ 	}
