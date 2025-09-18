@@ -6,4 +6,4 @@ sys-kernel/chromeos-kernel-5_4 clang -lld
 <sys-kernel/chromeos-kernel-5_15-9999 apply_patches
 <sys-kernel/chromeos-kernel-6_1-9999 apply_patches
 sys-libs/ncurses unicode
-media-libs/arc-mesa-vmware android_aep android_gles31
+media-libs/arc-mesa-vmware android_aep android_gles31 abi_x86_32
